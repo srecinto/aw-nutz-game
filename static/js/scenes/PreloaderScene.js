@@ -62,6 +62,7 @@ export default class PreloaderScene extends Phaser.Scene {
         this.load.image("title_top", "/images/title_top.png");
         this.load.image("transition_bottom", "/images/transition_bottom.png");
         this.load.image("transition_top", "/images/transition_top.png");
+        this.load.script("webfont", "https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js");
     }
     
     initProgressBar() {
@@ -76,7 +77,7 @@ export default class PreloaderScene extends Phaser.Scene {
         console.log("PreloaderScene.displayLoadingText()");
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;
-        
+        //Show Loading Text
         this.loadingText = this.make.text({
             x: width / 2,
             y: height / 2 - 50,
@@ -87,6 +88,7 @@ export default class PreloaderScene extends Phaser.Scene {
             }
         });
         this.loadingText.setOrigin(0.5, 0.5);
+        
         
         this.percentText = this.make.text({
                 x: width / 2,
@@ -114,7 +116,7 @@ export default class PreloaderScene extends Phaser.Scene {
     ready() {
         console.log("PreloaderScene.ready()");
         this.readyCount++;
-        if (this.readyCount === 2) {
+        if (this.readyCount === 1) { //TODO: Change to 2 to add loading delay
             this.scene.start("Title");
         }
     }

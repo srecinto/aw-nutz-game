@@ -17,5 +17,7 @@ https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3
 
 http://www.html5gamedevs.com
 
-https://gamedevacademy.org/creating-a-phaser-3-template-part-1/
+https://gamedevacademy.org/category/tutorials/html5-gamedev-phaser/
+
+https://gamedevacademy.org/creating-a-phaser-3-template-part-1
 
