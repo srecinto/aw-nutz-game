@@ -57,29 +57,31 @@ export default class TitleScene extends Phaser.Scene {
             gameObject.scene.selectedMenuItem = gameObject.scene.menuItems.indexOf(gameObject);
             gameObject.setAlpha(1);
             //console.log(gameObject.scene.selectedMenuItem);
-        });
+        }, this);
         
         this.input.on('gameobjectout', function (pointer, gameObject) {
             gameObject.setAlpha(0.01);
-        });
+        }, this);
         
         this.input.on('pointerdown', function (pointer, gameObjectArray) {
             if(gameObjectArray.length !=0) {
                 var gameObject = gameObjectArray[0];  //TODO:  Is this safe?
                 //console.log(gameObject);
                 //gameObject.scene.selectedMenuItem = gameObject.scene.menuItems.indexOf(gameObject);
-                console.log("Pointer Down: " + gameObject.scene.selectedMenuItem);
+                //console.log("Pointer Down: " + gameObject.scene.selectedMenuItem);
             }
             
-        });
+        }, this);
         
         this.input.on('pointerup', function (pointer, gameObjectArray) {
             if(gameObjectArray.length !=0) {
                 var gameObject = gameObjectArray[0];  //TODO:  Is this safe?
                 //gameObject.scene.selectedMenuItem = gameObject.scene.menuItems.indexOf(gameObject);
-                console.log("Pointer Up: " + gameObject.scene.selectedMenuItem);
+                //console.log("Pointer Up: " + gameObject.scene.selectedMenuItem);
+                gameObject.selectedHandler(this);
+                
             }
-        });
+        }, this);
         
     }
     
@@ -111,6 +113,7 @@ export default class TitleScene extends Phaser.Scene {
             selectBoxWidth: selectBoxWidth, 
             selectBoxLineWeight: selectBoxLineWeight, 
             selectBoxAlpha: selectBoxAlphaShow,
+            selectedHandler: this.handleStartSceneSelection,
             label: "Start" } );
         
         this.createMenuItem( {
@@ -120,6 +123,7 @@ export default class TitleScene extends Phaser.Scene {
             selectBoxWidth: selectBoxWidth, 
             selectBoxLineWeight: selectBoxLineWeight,
             selectBoxAlpha: selectBoxAlphaHide,
+            selectedHandler: this.handleOptionsSceneSelection,
             label: "Options" } );
         
         this.createMenuItem( {
@@ -129,6 +133,7 @@ export default class TitleScene extends Phaser.Scene {
             selectBoxWidth: selectBoxWidth, 
             selectBoxLineWeight: selectBoxLineWeight, 
             selectBoxAlpha: selectBoxAlphaHide,
+            selectedHandler: this.handleMapEditorSceneSelection,
             label: "Map Editor" } );
         
         this.createMenuItem( {
@@ -138,6 +143,7 @@ export default class TitleScene extends Phaser.Scene {
             selectBoxWidth: selectBoxWidth, 
             selectBoxLineWeight: selectBoxLineWeight, 
             selectBoxAlpha: selectBoxAlphaHide,
+            selectedHandler: this.handleCreditsSceneSelection,
             label: "Credits" } );
         
         this.menuBox.fillRect(menuBoxX, menuBoxY, menuBoxWidth, menuBoxHeight);
@@ -165,9 +171,34 @@ export default class TitleScene extends Phaser.Scene {
             style: style
         });
         menuItem.setAlpha(config.selectBoxAlpha);
+        menuItem.selectedHandler = config.selectedHandler;
         this.menuItems.push(menuItem);
         
     }
     
+    handleStartSceneSelection(scene) {
+        console.log("handleStartSceneSelection()");
+        scene.input.stopPropagation();
+        scene.game.scene.switch("Title", "Game");
+    }
+    
+    handleOptionsSceneSelection(scene) {
+        console.log("handleOptionsSceneSelection()");
+        scene.input.stopPropagation();
+        scene.game.scene.switch("Title", "Options");
+    }
+    
+    handleMapEditorSceneSelection(scene) {
+        console.log("handleMapEditorSceneSelection()");
+        scene.input.stopPropagation();
+        scene.game.scene.switch("Title", "MapEditor");
+    }
+    
+    handleCreditsSceneSelection(scene) {
+        console.log("handleCreditsSceneSelection()");
+        //console.log(scene);
+        scene.input.stopPropagation();
+        scene.game.scene.switch("Title", "Credits");
+    }
     
 };

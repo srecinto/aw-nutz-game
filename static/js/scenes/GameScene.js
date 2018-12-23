@@ -12,5 +12,10 @@ export default class GameScene extends Phaser.Scene {
      
     create () {
         this.add.image(400, 300, 'logo_bbg');
+        
+        this.input.on('pointerup', function (pointer, gameObjectArray) {
+            this.input.stopPropagation();
+            this.game.scene.switch("Game", "Title");
+        }, this);
     }
 };
