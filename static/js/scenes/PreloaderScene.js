@@ -1,5 +1,3 @@
-import "//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js";
- 
 export default class PreloaderScene extends Phaser.Scene {
     constructor() {
         super("Preloader");
@@ -117,7 +115,8 @@ export default class PreloaderScene extends Phaser.Scene {
         console.log("PreloaderScene.ready()");
         this.readyCount++;
         if (this.readyCount === 1) { //TODO: Change to 2 to add loading delay
-            this.scene.start("Title");
+            //this.scene.start("Title");
+            this.scene.start("Game");
         }
     }
 };

@@ -1,5 +1,3 @@
-import "//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js";
- 
 export default class CreditScene extends Phaser.Scene {
     constructor() {
         super("Credits");
@@ -8,6 +6,7 @@ export default class CreditScene extends Phaser.Scene {
      
     preload() {
         console.log("CreditScene.preload()");
+        this.add.text(100, 200, 'Credits Scene', { fontFamily: 'Arial', fontSize: 64, color: '#00ff00' });
     }
      
     create () {

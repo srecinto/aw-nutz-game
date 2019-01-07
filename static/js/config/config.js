@@ -1,8 +1,18 @@
-import "//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js";
- 
 export default {
-    type: Phaser.AUTO,
-    parent: "phaser-example",
+    type: Phaser.WEBGL,
+    parent: "gameCanvas",
     width: 800,
-    height: 600
+    height: 600,
+    pixelArt: true,
+    roundPixels: true,
+    zoom: 2,
+    physics: {
+        default: "arcade",
+        arcade: {
+            gravity: {
+                y: 0
+            },
+            debug: true
+        }
+    }
 };

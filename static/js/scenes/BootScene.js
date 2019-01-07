@@ -1,5 +1,3 @@
-import "//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js";
- 
 export default class BootScene extends Phaser.Scene {
     constructor() {
         super("Boot");

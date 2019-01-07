@@ -1,5 +1,3 @@
-import "//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js";
- 
 export default class MapEditorScene extends Phaser.Scene {
     constructor() {
         super("MapEditor");

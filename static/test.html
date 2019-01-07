@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+</head>
+<body>
+
+    <script>
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var numberOfGoblins = 1;
+    var tileWidth = 16;
+    var tileHeight = 16;
+    var mapWidth = 25;
+    var mapHeight = 25;
+    var tileStartX = 100;
+    var tileStartY = 100;
+    var fontSize = 12;
+    var tickCounter = 0;
+    
+    var map = Array(mapWidth);
+    var goblinList = Array(numberOfGoblins);
+
+    function preload ()
+    {
+        console.log("preload()");
+    }
+
+    function create ()
+    {
+        console.log("create()");
+        
+        for(g = 0; g < numberOfGoblins; g++) {
+            var randomX = getRandomInt(0, mapWidth)
+            var randomY = getRandomInt(0, mapHeight)
+            
+            var goblin = {
+                x: 0,
+                y: 0,
+                text: null,
+                previousFloor: null
+            }
+            
+            goblin.x = tileStartX + (randomX * tileWidth);
+            goblin.y = tileStartY + (randomY * tileHeight);
+            
+            goblin.text = this.add.text(goblin.x, goblin.y, 'g', { fontFamily: 'monospace', fontSize: fontSize, color: '#ffa500' });
+            
+            goblinList[g] = goblin;
+        }
+        
+        for(i = 0; i < mapWidth; i++) {
+            map[i] = Array(mapHeight);
+            //horizontal map display
+            for(j = 0; j < mapHeight; j++) {
+                //verticle map display
+                map[i][j] = this.add.text(tileStartX + (i * tileWidth), tileStartY + (j * tileHeight), '*', { fontFamily: 'monospace', fontSize: fontSize, color: '#cccccc' });
+            }
+        }
+        
+    }
+    
+    function update () {
+        //aconsole.log("update()");
+        if(tickCounter > 10) {
+            drawWorld();
+            tickCounter = 0;
+        }
+        tickCounter++
+    }
+    
+    function drawWorld() {
+        for(g = 0; g < numberOfGoblins; g++) {
+            var goblin = goblinList[g];
+            randomlyMoveGoblin(goblin);
+            for(i = 0; i < mapWidth; i++) {
+                //horizontal map display
+                for(j = 0; j < mapHeight; j++) {
+                    //verticle map display
+                    //TODO: see of we need to adjust map
+                    var floor = map[i][j];
+                    if(floor.x == goblin.x && floor.y == goblin.y) {
+                        if(goblin.previousFloor) {
+                            goblin.previousFloor.setVisible(true);
+                        }
+                        floor.setVisible(false);
+                        //goblin.text.setVisible(true);
+                        goblin.previousFloor = floor;
+                    }
+                }
+            }
+        }
+    }
+    
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+    }
+    
+    function getRandomIntInclusive(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+    }
+    
+    function randomlyMoveGoblin(goblinInstance) {
+        // Find where goblin is
+        // randomly move up, down left or right
+        
+        //First determine direction: 1 = Up, 2 = Down, 3 = Left, 4 = Right
+        const UP = 1;
+        const DOWN = 2;
+        const LEFT = 3;
+        const RIGHT = 4;
+        
+        var randomDirection = getRandomIntInclusive(1, 4);
+        
+        switch (randomDirection) {
+            case UP:
+                if(goblinInstance.y > tileStartY) {
+                    goblinInstance.y = goblinInstance.y - tileHeight;
+                    goblinInstance.text.y = goblinInstance.y;
+                }
+                break;
+            case DOWN:
+                if(goblinInstance.y < (tileStartY + (tileHeight * mapHeight) - tileHeight)) {
+                    goblinInstance.y = goblinInstance.y + tileHeight;
+                    goblinInstance.text.y = goblinInstance.y;
+                }
+                break;
+            case LEFT:
+                if(goblinInstance.x > tileStartX) {
+                    goblinInstance.x = goblinInstance.x - tileWidth;
+                    goblinInstance.text.x = goblinInstance.x;
+                }
+                break;
+            case RIGHT:
+                if(goblinInstance.x < (tileStartX + (tileWidth * mapWidth) - tileWidth)) {
+                    goblinInstance.x = goblinInstance.x + tileWidth;
+                    goblinInstance.text.x = goblinInstance.x;
+                }
+                break;
+        }
+    }
+    </script>
+
+</body>
+</html>
