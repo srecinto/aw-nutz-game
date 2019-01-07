@@ -1,3 +1,5 @@
+import makeAnimations from '/js/config/animations.js';
+
 export default class PreloaderScene extends Phaser.Scene {
     constructor() {
         super("Preloader");
@@ -13,7 +15,7 @@ export default class PreloaderScene extends Phaser.Scene {
         this.displayLoadingText();
         
         this.load.on("progress", function (value) {
-            console.log(value);
+            //console.log(value);
             this.progressBar.clear();
             this.progressBar.fillStyle(0xffffff, 1);
             this.progressBar.fillRect(250, 280, 300 * value, 30);
@@ -21,17 +23,19 @@ export default class PreloaderScene extends Phaser.Scene {
         }.bind(this));
                     
         this.load.on("fileprogress", function (file) {
-            console.log(file.src);
+            //console.log(file.src);
             this.assetText.setText("Loading asset: " + file.key);
         }.bind(this));
          
         this.load.on("complete", function () {
-            console.log("complete");
+            console.log("preload files complete!");
             this.progressBar.destroy();
             this.progressBox.destroy();
             this.loadingText.destroy();
             this.percentText.destroy();
             this.assetText.destroy();
+            //Set up animations
+            makeAnimations(this);
             this.ready();
         }.bind(this));
         
@@ -55,11 +59,13 @@ export default class PreloaderScene extends Phaser.Scene {
         this.load.image("logo_wbg", "/images/ir_logo_w.png");
         this.load.image("nutshop", "/images/nutshop.png");
         this.load.image("scorebar", "/images/scorebar.png");
-        this.load.image("squirrel", "/images/squirrel.png");
         this.load.image("title_bottom", "/images/title_bottom.png");
         this.load.image("title_top", "/images/title_top.png");
         this.load.image("transition_bottom", "/images/transition_bottom.png");
         this.load.image("transition_top", "/images/transition_top.png");
+        
+        this.load.spritesheet("squirrel", "/images/squirrel.png", { frameWidth: 32, frameHeight: 32 });
+        
         this.load.script("webfont", "https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js");
     }
     

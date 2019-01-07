@@ -1,3 +1,5 @@
+import Skitters from '/js/sprites/Skitters.js';
+
 export default class GameScene extends Phaser.Scene {
     constructor () {
         super("Game");
@@ -29,6 +31,25 @@ export default class GameScene extends Phaser.Scene {
         //for (var x = 0; x < )
         //layer.putTileAt(0, 0, 0);
 
+        this.skitters = new Skitters({
+            scene: this,
+            key: "skitters",
+            x: 16,
+            y: 16
+        });
+        
+        // The camera should follow skitters but only to the bounds of the map
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.startFollow(this.skitters);
+        this.cameras.main.roundPixels = true;
+        
+        this.physics.world.bounds.width = map.widthInPixels;
+        this.physics.world.bounds.height = map.heightInPixels;
 
     }
+    
+    update () {
+        this.skitters.update();
+    }
+    
 };
