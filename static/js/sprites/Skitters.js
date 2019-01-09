@@ -7,6 +7,8 @@ export default class Skitters extends Phaser.GameObjects.Sprite {
         config.scene.add.existing(this);
         
         this.anims.play("skitters_idle_right", true);
+        
+        this.isMoving = false;
     }
     
     update() {

@@ -12,6 +12,7 @@ export default class GameScene extends Phaser.Scene {
     }
      
     create () {
+        this.playerLastMoveTime = 0;
         //this.add.image(400, 300, 'logo_bbg');
         /*
         this.input.on('pointerup', function (pointer, gameObjectArray) {
@@ -21,17 +22,17 @@ export default class GameScene extends Phaser.Scene {
         */
         
         //var map = this.make.tilemap({ width: 200, height: 200, tileWidth: 32, tileHeight: 32 });
-        var map = this.make.tilemap({ key: 'map' });
+        this.map = this.make.tilemap({ key: 'map' });
         //var tiles = map.addTilesetImage('bgPalette', null, 32, 32);
-        var tiles = map.addTilesetImage('bgPalette', 'bgPalette');
-        var layers = map.createDynamicLayer("Ground", tiles, 0, 0);
+        this.tiles = this.map.addTilesetImage('bgPalette', 'bgPalette');
+        this.groundLayer = this.map.createDynamicLayer("Ground", this.tiles, 0, 0);
         //var layer = map.createBlankDynamicLayer('layer1', tiles);
         
         //Put grass
         //for (var x = 0; x < )
         //layer.putTileAt(0, 0, 0);
 
-        this.skitters = new Skitters({
+        this.player = new Skitters({
             scene: this,
             key: "skitters",
             x: 16,
@@ -39,17 +40,47 @@ export default class GameScene extends Phaser.Scene {
         });
         
         // The camera should follow skitters but only to the bounds of the map
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        this.cameras.main.startFollow(this.skitters);
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        this.cameras.main.startFollow(this.player);
         this.cameras.main.roundPixels = true;
         
-        this.physics.world.bounds.width = map.widthInPixels;
-        this.physics.world.bounds.height = map.heightInPixels;
+        this.physics.world.bounds.width = this.map.widthInPixels;
+        this.physics.world.bounds.height = this.map.heightInPixels;
 
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
     
-    update () {
-        this.skitters.update();
+    update (time, delta) {
+        this.player.update();
+        
+        var tw = this.map.tileWidth * this.groundLayer.scaleX;
+        var th = this.map.tileHeight * this.groundLayer.scaleY;
+        var repeatMoveDelay = 100;
+    
+        if (time > this.playerLastMoveTime + repeatMoveDelay) {
+            if (this.cursors.down.isDown) {
+                this.player.anims.play("skitters_move_down", true);   
+                this.player.y += th;
+                this.playerLastMoveTime = time;
+            }
+            else if (this.cursors.up.isDown) {
+                this.player.anims.play("skitters_move_up", true);
+                this.player.y -= th;
+                this.playerLastMoveTime = time;
+            } else if (this.cursors.left.isDown) {
+                this.player.flipX = true;
+                this.player.anims.play("skitters_move_right", true);
+                this.player.x -= tw;
+                this.playerLastMoveTime = time;
+            } else if (this.cursors.right.isDown) {
+                this.player.flipX = false;
+                this.player.anims.play("skitters_move_right", true);
+                this.player.x += tw;
+                this.playerLastMoveTime = time;
+            }
+        }
     }
+    
+    
     
 };
