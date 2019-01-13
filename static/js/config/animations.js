@@ -20,18 +20,18 @@ export default function makeAnimations(scene) {
     scene.anims.create({
         key: "skitters_move_down",
         frames: scene.anims.generateFrameNumbers("squirrel", { frames: [
-            26, 25, 24, 24, 24, 25, 26
+            26, 25, 24, 24, 24, 24, 24, 25, 26
             ] } ),
-        frameRate: 10,
+        frameRate: 24,
         repeat: 0
     });
     
     scene.anims.create({
         key: "skitters_move_up",
         frames: scene.anims.generateFrameNumbers("squirrel", { frames: [
-            27, 28, 29, 29, 29, 28, 27
+            27, 28, 29, 29, 29, 29, 29, 28, 27
             ] } ),
-        frameRate: 10,
+        frameRate: 24,
         repeat: 0
     });
     
@@ -40,7 +40,7 @@ export default function makeAnimations(scene) {
         frames: scene.anims.generateFrameNumbers("squirrel", { frames: [
             15, 16, 17, 18, 19, 20, 21, 22, 23
             ] } ),
-        frameRate: 10,
+        frameRate: 24,
         repeat: 0
     });
     
