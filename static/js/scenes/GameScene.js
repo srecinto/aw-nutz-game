@@ -1,5 +1,15 @@
 import Skitters from '/js/sprites/Skitters.js';
 
+/**
+ * TODO: 
+ * - Create Obsticles Map for tiles that Skitters can not pass through
+ * - Create Hazards Sprites that can kill Skitters
+ * - Create nut sprites for eating and simple scoring
+ * - Create GUI Sprites/Images
+ * - Create Scoring System
+ * - Create Level Progression
+ **/
+
 export default class GameScene extends Phaser.Scene {
     constructor () {
         super("Game");
@@ -14,11 +24,27 @@ export default class GameScene extends Phaser.Scene {
     create () {
         this.playerIdleTimer = null;
         
+        /*
+        Tilemap Layer descriptions and z-order:
+        
+        BackGround (Very bottom of z layer)
+        Ground
+        Skitters (should be above ground layers)
+        Obsticle 1 (Skitters can not pass through these items)
+        Obsticle 2 (Skitters can not pass through these items)
+        Above 1 (cant think of a better name other than these items are rendered as if above skitters)
+        Above 2 (Front/Top most layer, things that cover others)
+        */
+        
         //var map = this.make.tilemap({ width: 200, height: 200, tileWidth: 32, tileHeight: 32 });
         this.map = this.make.tilemap({ key: 'map' });
         //var tiles = map.addTilesetImage('bgPalette', null, 32, 32);
         this.tiles = this.map.addTilesetImage('bgPalette', 'bgPalette');
+        this.cityTiles = this.map.addTilesetImage('bgCityPalette', 'bgCityPalette');
+        
+        this.bgLayer = this.map.createDynamicLayer("BackGround", this.tiles, 0, 0);
         this.groundLayer = this.map.createDynamicLayer("Ground", this.tiles, 0, 0);
+        this.obsticlesLayer = this.map.createDynamicLayer("Obsticles", this.tiles, 0, 0);
         
         this.maxXMovement = this.map.tileWidth * this.groundLayer.scaleX;
         this.maxYMovement = this.map.tileHeight * this.groundLayer.scaleY;
@@ -26,13 +52,9 @@ export default class GameScene extends Phaser.Scene {
         this.currentXMovement = 0;
         this.currentYMovement = 0;
         
-        //console.log("maxXMovement: " + this.maxXMovement);
-        //console.log("maxYMovement: " + this.maxYMovement);
-        //var layer = map.createBlankDynamicLayer('layer1', tiles);
-        
-        //Put grass
-        //for (var x = 0; x < )
-        //layer.putTileAt(0, 0, 0);
+        this.cloud = this.add.image(0, 0, "bgPalette");
+        this.cloud.setCrop(224, 64, 64, 32);
+        this.cloud.setDisplayOrigin(224, 64);
 
         this.player = new Skitters({
             scene: this,
@@ -63,20 +85,33 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.existing(this.player);
         this.player.body.setCollideWorldBounds(true);
         
+        this.obsticlesLayer.setCollisionByExclusion([-1]);
+        //this.map.setCollision([2, 3], true, false, this.obsticlesLayer);
+        //this.physics.add.collider(this.player, this.obsticleslayer);
+        
         
         // The camera should follow skitters but only to the bounds of the map
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.roundPixels = true;
+        this.cameras.main.setZoom(1);
         
         this.physics.world.bounds.width = this.map.widthInPixels;
         this.physics.world.bounds.height = this.map.heightInPixels;
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
+        this.physics.add.collider(this.player, this.obsticlesLayer);
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     
     update (time, delta) {
+        if(this.cloud.x > this.map.widthInPixels) {
+            this.cloud.x = -64;    
+        } else {
+            this.cloud.x += 1;//0.1;
+        }
+        
+        
         this.player.update();
         this.skittersPositionText.x = this.player.x + this.player.width;
         this.skittersPositionText.y = this.player.y + this.player.height;
@@ -110,6 +145,13 @@ export default class GameScene extends Phaser.Scene {
                 this.player.anims.play("skitters_move_right", true);
             }
         }
+        
+        // Smooth follow the player
+        var smoothFactor = 0.1;
+    
+        this.cameras.main.scrollX = smoothFactor * this.cameras.main.scrollX + (1 - smoothFactor) * (this.player.x - this.cameras.main.width * 0.5);
+        this.cameras.main.scrollY = smoothFactor * this.cameras.main.scrollY + (1 - smoothFactor) * (this.player.y - this.cameras.main.height * 0.5);
+
     }
     
     playerAnimationStarted(animation, animationFrame, gameObject) {
